@@ -4,3 +4,4 @@ __pycache__/
 .ipynb_checkpoints/
 vector_store/
 data/
+vector_store/

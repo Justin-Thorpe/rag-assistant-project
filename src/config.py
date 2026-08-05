@@ -8,11 +8,13 @@ load_dotenv()
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-RAW_DATA_DIR = Path(
-    os.getenv("RAW_DATA_DIR", PROJECT_ROOT/"data"/"raw")
-)
+#RAW_DATA_DIR = Path(
+#    os.getenv("RAW_DATA_DIR", PROJECT_ROOT/"data"/"raw")
+#)
+RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
+VECTOR_STORE_DIR = PROJECT_ROOT / "vector_store"
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 LANGSMITH_PROJECT = os.getenv(
     "LANGSMITH_PROJECT",
     "rag-project"
