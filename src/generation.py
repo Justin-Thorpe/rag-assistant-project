@@ -29,13 +29,15 @@ def generate_answer(question, documents):
             (
                 "system",
                 """
-                You are an assistant that answers questions about the 2026 Formula 1 regulations.
+                You are an assistant that answers questions about Formula 1 regulations.
 
-                Answer using the provided context.
+                Answer only using the provided context, in this case the F1 Regulations.
+
                 If the answer is not in the context, say:
                 "I could not find that information in the indexed documents."
 
-                Ensure that you include a reference to the regulation section.
+                If the answer is in the context:
+                Return an answer and ensure that you include a reference to the regulation section.
 
                 Context:
                 {context}
