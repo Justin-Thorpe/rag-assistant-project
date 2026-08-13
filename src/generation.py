@@ -55,3 +55,12 @@ def generate_answer(question, documents):
     )
 
     return response.content
+
+def format_sources(documents):
+    return [
+        {
+            "source": doc.metadata.get("source"),
+            "page": doc.metadata.get("page"),
+        }
+        for doc in documents
+    ]

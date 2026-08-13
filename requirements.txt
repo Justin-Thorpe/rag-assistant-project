@@ -1,0 +1,10 @@
+python-dotenv
+pypdf
+
+langchain-core
+langchain-text-splitters
+langchain-chroma
+langchain-huggingface
+langchain-ollama
+
+sentence-transformers
