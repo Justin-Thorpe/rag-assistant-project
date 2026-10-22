@@ -16,9 +16,10 @@ def create_llm():
     temperature=0
 )
 
-def format_context(retrieved_docs):
+def format_context(docs):
     return "\n\n".join(
-        doc.page_content for doc in retrieved_docs
+        f"[{i}] {d.metadata['source']}, page {d.metadate['page']}\n{d.page_content}"
+        for i, d in enumerate(docs, start=1)
     )
 
 def generate_answer(question, documents):
@@ -29,15 +30,15 @@ def generate_answer(question, documents):
             (
                 "system",
                 """
-                You are an assistant that answers questions about Formula 1 regulations.
+                You are an assistant that answers questions about uploaded documents.
 
-                Answer only using the provided context, in this case the F1 Regulations.
-
-                If the answer is not in the context, say:
-                "I could not find that information in the indexed documents."
+                Use only facts stated in the context. 
 
                 If the answer is in the context:
-                Return an answer and ensure that you include a reference to the regulation section.
+                Return your answer and cite the passages you used with their bracket numbers, e.g. [2].
+
+                If the answer is not in the context, say exactly:
+                "I could not find that information in the indexed documents."
 
                 Context:
                 {context}

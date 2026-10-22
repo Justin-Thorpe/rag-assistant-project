@@ -26,6 +26,15 @@ def build_vector_store(splits):
         persist_directory=str(config.VECTOR_STORE_DIR),
     )
 
+
+def get_vector_store():
+    return Chroma(
+        collection_name=config.COLLECTION_NAME,
+        embedding_function=create_embeddings(),
+        persist_directory=str(config.VECTOR_STORE_DIR),
+        collection_metadata={"hnsw:space":"cosine"},
+    )
+
 def create_retriever(vectorstore):
     return vectorstore.as_retriever(
         search_kwargs={"k": config.TOP_K}

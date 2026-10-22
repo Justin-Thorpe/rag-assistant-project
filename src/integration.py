@@ -2,6 +2,8 @@
 
 from pathlib import Path
 import sys
+import hashlib
+from collections import defaultdict
 
 PROJECT_ROOT = Path.cwd().parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -53,5 +55,19 @@ def split_documents(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
     )
+    splits = text_splitter.split_documents(documents)
 
-    return text_splitter.split_documents(documents)
+    '''
+    Gives chuncks an ID at split time
+    '''
+    counters = defaultdict(int)
+    for doc in splits:
+        key = (doc.metadata["source"], doc.metadata["page"])
+        doc.metadata["chunk_index"] = counters[key]
+        counters[key] += 1
+        raw = f"{key[0]} | Page {key[1]} | Chunk {doc.metadata['chunk_index']}"
+        doc.metadata["chunk_id"] = hashlib.sha1(raw.encode()).hexdigest()
+
+    return splits 
+
+# Limitations: Need to add method to delete chunks if docs change, or chunk_size/chunk_overlap are changed
