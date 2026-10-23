@@ -6,7 +6,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 
 def create_embeddings():
     return HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
+        model_name=config.EMBEDDING_MODEL
     )
 
 def build_vector_store(splits):
@@ -26,6 +26,10 @@ def get_vector_store():
         persist_directory=str(config.VECTOR_STORE_DIR),
         collection_metadata={"hnsw:space":"cosine"},
     )
+
+def index_documents(vectorstore, splits):
+    ids = [doc.metadata["chunk_id"] for doc in splits]
+    vectorstore.add_documents(splits, ids=ids)
 
 def create_retriever(vectorstore):
     return vectorstore.as_retriever(

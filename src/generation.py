@@ -4,60 +4,66 @@ from src import config
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 
-def create_llm():
-    return ChatOllama(
-    model="llama3.2",
-    temperature=0
+SYSTEM_PROMPT = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system",
+            """
+            You are an assistant that answers questions about uploaded documents.
+
+            Use only facts stated in the context. 
+
+            If the answer is in the context:
+            Return your answer and cite the passages you used with their bracket numbers, e.g. [2].
+
+            If the answer is not in the context, say exactly:
+            "I could not find that information in the indexed documents."
+
+            Context:
+            {context}
+            """,
+        ),
+        ("human", "{question}"),
+    ]
 )
 
-def format_context(docs):
-    return "\n\n".join(
-        f"[{i}] {d.metadata['source']}, page {d.metadate['page']}\n{d.page_content}"
-        for i, d in enumerate(docs, start=1)
-    )
+def create_llm():
+    return ChatOllama(model=config.LLM_MODEL, temperature=config.LLM_TEMP)
 
-def generate_answer(question, documents):
+def build_chain():
+    '''
+    Creates a prompt and llm once, then returns those
+    '''
     llm = create_llm()
-
     prompt = ChatPromptTemplate.from_messages(
         [
-            (
-                "system",
-                """
-                You are an assistant that answers questions about uploaded documents.
-
-                Use only facts stated in the context. 
-
-                If the answer is in the context:
-                Return your answer and cite the passages you used with their bracket numbers, e.g. [2].
-
-                If the answer is not in the context, say exactly:
-                "I could not find that information in the indexed documents."
-
-                Context:
-                {context}
-                """,
-            ),
-            ("human", "{question}"),
+            ("system", SYSTEM_PROMPT),
+            ("human", "{question}")
         ]
     )
 
-    rag_chain = prompt | llm
+    return prompt | llm
 
-    response = rag_chain.invoke(
-        {
-            "context": format_context(documents),
-            "question": question,
-        }
+def format_context(docs):
+    return "\n\n".join(
+        f"[{i}] {d.metadata['source']}, page {d.metadata['page']}\n{d.page_content}"
+        for i, d in enumerate(docs, start=1)
     )
 
-    return response.content
+def format_sources(docs):
+    '''
+    One entry per (source, page), with chunk numbers the LLM can return
+    '''
+    sources = {}
+    for i, d in enumerate(docs, start=1):
+        key = (d.metadata.get("source"), d.metadata.get("page"))
+        if key not in sources:
+            sources[key] = {
+                "souce": key[0],
+                "page": key[1],
+                "refs": [],
+                "exerpt": d.page_content[:300]
+            }
+        sources[key]["refs"].append(i)
 
-def format_sources(documents):
-    return [
-        {
-            "source": doc.metadata.get("source"),
-            "page": doc.metadata.get("page"),
-        }
-        for doc in documents
-    ]
+    return list(sources.values())
