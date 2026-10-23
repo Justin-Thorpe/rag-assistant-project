@@ -62,7 +62,7 @@ rag-project/
 ├── src/
 │   ├── __init__.py
 │   ├── config.py
-│   ├── ingestion.py
+│   ├── integration.py
 │   ├── retrieval.py
 │   └── generation.py
 └── vector_store/
@@ -97,7 +97,7 @@ pip install -r requirements.txt
 Install Ollama and download the local model:
 
 ```bash
-ollama pull llama3.2:3b
+ollama pull llama3.2
 ```
 
 Place the Formula 1 regulations (found here: https://api.fia.com/regulation/category/110) in:
@@ -163,3 +163,9 @@ Advanced RAG features such as query rewriting, reranking, multi-query retrieval,
 The goal of this project is to demonstrate practical understanding of AI integration and the core RAG system.
 
 It shows how external documents can be transformed into embeddings, indexed in a vector database, retrieved based on semantic similarity, and provided as grounded context to a language model.
+
+## Recent Updates
+
+* Fixed vector store duplication
+* Added TOML
+* 

@@ -1,12 +1,8 @@
 # Integration handles functions for loading and splitting docs
 
 from pathlib import Path
-import sys
 import hashlib
 from collections import defaultdict
-
-PROJECT_ROOT = Path.cwd().parent
-sys.path.insert(0, str(PROJECT_ROOT))
 
 from src import config
 
@@ -21,7 +17,7 @@ def load_documents(file_path: str) -> list[Document]:
     """
     documents = []
 
-    for pdf_path in Path(file_path).glob("*pdf"):
+    for pdf_path in Path(file_path).glob("*.pdf"):
         reader = PdfReader(pdf_path)
 
         for page_number, page in enumerate(reader.pages, start=1):

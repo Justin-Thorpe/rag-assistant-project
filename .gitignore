@@ -5,3 +5,4 @@ __pycache__/
 vector_store/
 data/
 vector_store/
+*.egg-info/

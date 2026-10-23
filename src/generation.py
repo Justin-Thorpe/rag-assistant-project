@@ -1,11 +1,5 @@
 # Generation handles prompt templates, LLM setup, and answer generation
 
-from pathlib import Path
-import sys
-
-PROJECT_ROOT = Path.cwd().parent
-sys.path.insert(0, str(PROJECT_ROOT))
-
 from src import config
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
