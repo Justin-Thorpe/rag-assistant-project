@@ -35,14 +35,8 @@ def build_chain():
     Creates a prompt and llm once, then returns those
     '''
     llm = create_llm()
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", SYSTEM_PROMPT),
-            ("human", "{question}")
-        ]
-    )
 
-    return prompt | llm
+    return SYSTEM_PROMPT | llm
 
 def format_context(docs):
     return "\n\n".join(
@@ -59,10 +53,10 @@ def format_sources(docs):
         key = (d.metadata.get("source"), d.metadata.get("page"))
         if key not in sources:
             sources[key] = {
-                "souce": key[0],
+                "source": key[0],
                 "page": key[1],
                 "refs": [],
-                "exerpt": d.page_content[:300]
+                "excerpt": d.page_content[:300]
             }
         sources[key]["refs"].append(i)
 
